@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableHighlight,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -95,6 +101,16 @@ const Login = () => {
             navigation.navigate('home');
           }}
         />
+        <View style={loginStyle.wrapBtn}>
+          <TouchableHighlight
+            onPress={() => navigation.navigate('register')}
+            activeOpacity={0.6}
+            underlayColor="#DDDDDD">
+            <View style={loginStyle.btnJoin}>
+              <Text style={loginStyle.textBtnJoin}>JOIN CHAT</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
       </View>
     </View>
   );
@@ -136,5 +152,21 @@ const loginStyle = StyleSheet.create({
   errormsg: {
     color: 'red',
     fontSize: 15,
+  },
+  wrapBtn: {
+    marginTop: 50,
+  },
+  btnJoin: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 50,
+    backgroundColor: '#002C3E',
+    borderRadius: 20,
+  },
+  textBtnJoin: {
+    color: 'white',
+    letterSpacing: 5,
+    fontWeight: 'bold',
   },
 });
