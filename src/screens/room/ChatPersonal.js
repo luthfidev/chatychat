@@ -16,8 +16,11 @@ export default class ChatPersonal extends Component {
       <View style={{flex: 1}}>
         <Header
           placement="left"
-          leftComponent={{icon: 'arrow-back', color: '#fff'}}
-          centerComponent={{text: 'Back', style: {color: '#fff'}}}
+          leftComponent={{
+            onPress: () => this.props.navigation.goBack(),
+            icon: 'arrow-back',
+            color: '#fff',
+          }}
         />
         <FlatList
           ref={(instance) => (this._chats = instance)}

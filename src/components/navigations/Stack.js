@@ -11,6 +11,7 @@ import RegisterScreen from '../../screens/Register';
 
 import EditAvatarScreen from '../../screens/profile/EditAvatar';
 import ChatPersonalScreen from '../../screens/room/ChatPersonal';
+import EditProfileScreen from '../../screens/profile/EditProfile';
 
 // Bottom Tab
 import Tab from './Tab';
@@ -58,6 +59,11 @@ class Stack extends Component {
                 options={{title: 'Chat', headerShown: false}}
                 component={ChatPersonalScreen}
                 name={'chatpersonal'}
+              />
+              <Stacks.Screen
+                options={{title: 'Edit Profile', headerShown: false}}
+                component={EditProfileScreen}
+                name={'editprofile'}
               />
             </>
           </Stacks.Navigator>

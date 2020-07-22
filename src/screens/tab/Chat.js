@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, I18nManager} from 'react-native';
 import {FlatList, RectButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
-import {Avatar, Badge} from 'react-native-elements';
+import {Avatar, Badge, SearchBar} from 'react-native-elements';
 //  To toggle LTR/RTL uncomment the next line
 // I18nManager.allowRTL(true);
 
@@ -49,12 +49,17 @@ const Chat = () => {
     );
   };
   return (
-    <FlatList
-      data={DATA}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
-      renderItem={({item, index}) => <SwipeableRow item={item} index={index} />}
-      keyExtractor={(item, index) => `message ${index}`}
-    />
+    <>
+      <SearchBar platform="ios" placeholder="Type Here..." />
+      <FlatList
+        data={DATA}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        renderItem={({item, index}) => (
+          <SwipeableRow item={item} index={index} />
+        )}
+        keyExtractor={(item, index) => `message ${index}`}
+      />
+    </>
   );
 };
 
