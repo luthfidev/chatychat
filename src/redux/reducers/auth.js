@@ -55,6 +55,27 @@ const auth = (state = initialState, action) => {
         isError: false,
       };
     }
+    case 'LOGOUT_PENDING': {
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    }
+    case 'LOGOUT_REJECTED': {
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    }
+    case 'LOGOUT_FULFILLED': {
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+      };
+    }
     default: {
       return {
         ...state,

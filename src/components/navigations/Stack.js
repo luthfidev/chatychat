@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
+import auth from '@react-native-firebase/auth';
 
 // Auth
 import LoginScreen from '../../screens/Login';
@@ -17,12 +18,30 @@ import EditProfileScreen from '../../screens/profile/EditProfile';
 import Tab from './Tab';
 
 const Stacks = createStackNavigator();
-class Stack extends Component {
-  render() {
-    return (
-      <>
-        <NavigationContainer>
-          <Stacks.Navigator headerMode="float" animation="fade">
+const Stack = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  const onAuthStateChanged = (_user) => {
+    setUser(_user);
+    if (initializing) {
+      setInitializing(false);
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  if (initializing) {
+    return null;
+  }
+  return (
+    <>
+      <NavigationContainer>
+        <Stacks.Navigator headerMode="float" animation="fade">
+          {!user && (
             <>
               <Stacks.Screen
                 component={LoginScreen}
@@ -43,7 +62,10 @@ class Stack extends Component {
                 }}
                 name={'register'}
               />
-
+            </>
+          )}
+          {user && (
+            <>
               <Stacks.Screen
                 options={{title: 'Home', headerShown: false}}
                 component={Tab}
@@ -66,11 +88,11 @@ class Stack extends Component {
                 name={'editprofile'}
               />
             </>
-          </Stacks.Navigator>
-        </NavigationContainer>
-      </>
-    );
-  }
-}
+          )}
+        </Stacks.Navigator>
+      </NavigationContainer>
+    </>
+  );
+};
 
 export default Stack;
