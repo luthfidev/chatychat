@@ -18,12 +18,17 @@ export default class setting extends Component {
     </TouchableHighlight>
   );
   renderItemSetting = ({item}) => (
-    <ListItem
-      title={item.title}
-      leftIcon={{name: item.icon}}
-      bottomDivider
-      chevron
-    />
+    <TouchableHighlight
+      activeOpacity={0.6}
+      underlayColor="#DDDDDD"
+      onPress={() => this.props.navigation.navigate('editprofile')}>
+      <ListItem
+        title={item.title}
+        leftIcon={{name: item.icon}}
+        bottomDivider
+        chevron
+      />
+    </TouchableHighlight>
   );
   render() {
     return (
