@@ -11,6 +11,7 @@ import {
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {useForm, Controller} from 'react-hook-form';
+import firestore from '@react-native-firebase/firestore';
 import {Logo} from '../components/Logo';
 import RegisterStyle from '../theme/auth/register';
 import {register} from '../redux/actions/auth';

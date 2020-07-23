@@ -10,39 +10,12 @@ import {
 import {ListItem} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 import {logout} from '../../redux/actions/auth';
-
-const keyExtractor = (item, index) => index.toString();
-const renderItemProfile = ({item}) => (
-  <TouchableHighlight
-    activeOpacity={0.6}
-    underlayColor="#DDDDDD"
-    onPress={() => this.props.navigation.navigate('editavatar')}>
-    <ListItem
-      title={item.name}
-      subtitle={item.subtitle}
-      leftAvatar={{source: {uri: item.avatar_url}}}
-      bottomDivider
-    />
-  </TouchableHighlight>
-);
-const renderItemSetting = ({item}) => (
-  <TouchableHighlight
-    activeOpacity={0.6}
-    underlayColor="#DDDDDD"
-    onPress={() => this.props.navigation.navigate('editprofile')}>
-    <ListItem
-      title={item.title}
-      leftIcon={{name: item.icon}}
-      bottomDivider
-      chevron
-    />
-  </TouchableHighlight>
-);
 
 const Setting = () => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const onLogout = async () => {
     try {
       await dispatch(logout());
@@ -50,6 +23,37 @@ const Setting = () => {
       Alert.alert('logout error');
     }
   };
+  const renderItemSetting = ({item}) => {
+    console.log(item)
+    return (
+      <TouchableHighlight
+        activeOpacity={0.6}
+        underlayColor="#DDDDDD"
+        onPress={() => navigation.navigate(item.name)}>
+        <ListItem
+          title={item.title}
+          leftIcon={{name: item.icon}}
+          bottomDivider
+          chevron
+        />
+      </TouchableHighlight>
+    );
+  };
+
+  const keyExtractor = (item, index) => index.toString();
+  const renderItemProfile = ({item}) => (
+    <TouchableHighlight
+      activeOpacity={0.6}
+      underlayColor="#DDDDDD"
+      onPress={() => navigation.navigate('editavatar')}>
+      <ListItem
+        title={item.name}
+        subtitle={item.subtitle}
+        leftAvatar={{source: {uri: item.avatar_url}}}
+        bottomDivider
+      />
+    </TouchableHighlight>
+  );
   return (
     <View>
       <View>
@@ -89,11 +93,12 @@ const profile = [
 ];
 const list = [
   {
-    name: 'profile',
+    name: 'editprofile',
     title: 'Profile',
     icon: 'person',
   },
   {
+    name: 'chat',
     title: 'Chat',
     icon: 'chat',
   },
