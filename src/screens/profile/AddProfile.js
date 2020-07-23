@@ -11,7 +11,7 @@ import {
 import {Header, Input, Card, Button} from 'react-native-elements';
 import EditStyle from '../../theme/profile/EditProfile';
 
-const EditProfile = () => {
+const AddProfile = () => {
 
     return (
       <SafeAreaView style={EditStyle.container}>
@@ -64,4 +64,4 @@ const EditProfile = () => {
       </SafeAreaView>
     );
 }
-export default EditProfile;
+export default AddProfile;

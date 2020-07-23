@@ -27,9 +27,9 @@ const Register = () => {
   const {control, handleSubmit, errors} = useForm();
   const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     try {
-      await dispatch(register(data.email, data.password));
+      dispatch(register(data.email, data.password));
       Alert.alert('Register Success');
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {

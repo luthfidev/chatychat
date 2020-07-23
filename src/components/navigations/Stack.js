@@ -5,6 +5,7 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
+import {useDispatch, useSelector} from 'react-redux';
 
 // Auth
 import LoginScreen from '../../screens/Login';
@@ -12,13 +13,17 @@ import RegisterScreen from '../../screens/Register';
 
 import EditAvatarScreen from '../../screens/profile/EditAvatar';
 import ChatPersonalScreen from '../../screens/room/ChatPersonal';
+import AddProfileScreen from '../../screens/profile/AddProfile';
 import EditProfileScreen from '../../screens/profile/EditProfile';
+
+import {getprofile} from '../../redux/actions/user';
 
 // Bottom Tab
 import Tab from './Tab';
 
 const Stacks = createStackNavigator();
 const Stack = () => {
+  const dispatch = useDispatch();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
 
@@ -28,8 +33,8 @@ const Stack = () => {
       setInitializing(false);
     }
   };
-
   useEffect(() => {
+    dispatch(getprofile())
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,6 +47,7 @@ const Stack = () => {
       <NavigationContainer>
         <Stacks.Navigator headerMode="float" animation="fade">
           {!user && (
+            
             <>
               <Stacks.Screen
                 component={LoginScreen}
@@ -83,9 +89,26 @@ const Stack = () => {
                 name={'chatpersonal'}
               />
               <Stacks.Screen
-                options={{title: 'Edit Profile', headerShown: false}}
+                options={{
+                  title: 'Profile',
+                  headerShown: false,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forModalPresentationIOS,}}
                 component={EditProfileScreen}
                 name={'editprofile'}
+              />
+              <Stacks.Screen
+                options={{
+                  title: 'Profile',
+                  headerShown: false,
+                  gestureEnabled: true,
+                  gestureDirection: 'vertical',
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forModalPresentationIOS,}}
+                component={AddProfileScreen}
+                name={'addprofile'}
               />
             </>
           )}

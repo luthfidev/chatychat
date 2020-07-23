@@ -1,8 +1,10 @@
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-export const getprofile = (email, password) => {
+export const getprofile = (email) => {
   return {
     type: 'GET_PROFILE',
+    payload: firestore().collection('chatychats').doc('users').get(),
   };
 };
 

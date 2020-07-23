@@ -30,9 +30,9 @@ const Login = () => {
   const {control, handleSubmit, errors} = useForm();
   const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     try {
-      await dispatch(login(data.email, data.password));
+      dispatch(login(data.email, data.password));
       Alert.alert('Login Success');
     } catch (error) {
       Alert.alert('Login Failed');
