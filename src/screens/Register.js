@@ -11,7 +11,6 @@ import {
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {useForm, Controller} from 'react-hook-form';
-import firestore from '@react-native-firebase/firestore';
 import {Logo} from '../components/Logo';
 import RegisterStyle from '../theme/auth/register';
 import {register} from '../redux/actions/auth';
@@ -40,6 +39,10 @@ const Register = () => {
       }
     }
   };
+
+  function trim(s) {
+    return s.replace(/^\s+|\s+$/g, ' ');
+  }
 
   return (
     <DismissKeyboard>
@@ -93,7 +96,7 @@ const Register = () => {
                     placeholderTextColor="#00a8ff"
                     autoCapitalize="none"
                     value={value}
-                    onChangeText={(password) => onChange(password)}
+                    onChangeText={(password) => onChange(trim(password))}
                   />
                 )}
                 name="password"

@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   SafeAreaView,
@@ -8,60 +7,104 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
+import {useDispatch, useSelector} from 'react-redux';
 import {Header, Input, Card, Button} from 'react-native-elements';
 import EditStyle from '../../theme/profile/EditProfile';
+import {addprofile} from '../../redux/actions/user';
 
 const AddProfile = () => {
+  const dispatch = useDispatch();
+  const {control, handleSubmit, errors} = useForm();
 
-    return (
-      <SafeAreaView style={EditStyle.container}>
-        <KeyboardAvoidingView behavior="position">
-          <View style={EditStyle.header}>
-            <Header
-              centerComponent={
-                <TouchableOpacity>
-                  <View style={EditStyle.btnDown} />
-                </TouchableOpacity>
-              }
-            />
+  const onSubmit = (data) => {
+    try {
+      dispatch(addprofile(data));
+    } catch (error) {
+      Alert.alert('Add profile failed');
+    }
+  };
+  return (
+    <SafeAreaView style={EditStyle.container}>
+      <KeyboardAvoidingView behavior="position">
+        <View style={EditStyle.header}>
+          <Header
+            centerComponent={
+              <TouchableOpacity>
+                <View style={EditStyle.btnDown} />
+              </TouchableOpacity>
+            }
+          />
 
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 10}}>
-                Profile
-              </Text>
-            </View>
-            <Card>
-              <View style={EditStyle.WrapperForm}>
-                <Input
-                  label="Full Name"
-                  /* onChangeText={this.onNameChange}
-                  defaultValue={this.state.name} */
-                  /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                />
-                <Input
-                  label="Birthdate"
-                  /* onChangeText={this.onBirthdateChange}
-                  defaultValue={this.state.birthdate} */
-                  /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                />
-                <View>
-                  <Input
-                    label="Gender"
-                   /*  onChangeText={this.onGenderChange}
-                    defaultValue={this.state.gender} */
-                    /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                  />
-                </View>
-                <Button
-                 /*  loading={isLoading}
-                  onPress={this.handleSubmit} */
-                  title="Save"
-                />
-              </View>
-            </Card>
+          <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 10}}>
+              Profile
+            </Text>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-}
+          <Card>
+            <View style={EditStyle.WrapperForm}>
+              <Controller
+                control={control}
+                render={({onChange, onBlur, value}) => (
+                  <Input
+                    type="text"
+                    underlineColorAndroid="transparent"
+                    placeholder="Fullname"
+                    placeholderTextColor="#00a8ff"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={(fullname) => onChange(fullname)}
+                  />
+                )}
+                name="fullname"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Required',
+                  },
+                }}
+                defaultValue=""
+              />
+              {errors.fullname && (
+                <Text style={EditStyle.errormsg}>
+                  {errors.fullname.message}
+                </Text>
+              )}
+              <Controller
+                control={control}
+                render={({onChange, onBlur, value}) => (
+                  <Input
+                    type="text"
+                    underlineColorAndroid="transparent"
+                    placeholder="Phone"
+                    placeholderTextColor="#00a8ff"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={(phone) => onChange(phone)}
+                  />
+                )}
+                name="phone"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Required',
+                  },
+                }}
+                defaultValue=""
+              />
+              {errors.phone && (
+                <Text style={EditStyle.errormsg}>{errors.phone.message}</Text>
+              )}
+              <Button
+                /*  loading={isLoading}*/
+                onPress={handleSubmit(onSubmit)}
+                title="Save"
+              />
+            </View>
+          </Card>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+};
 export default AddProfile;

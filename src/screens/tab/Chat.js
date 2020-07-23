@@ -1,15 +1,30 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, I18nManager} from 'react-native';
 import {FlatList, RectButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Badge, SearchBar} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 //  To toggle LTR/RTL uncomment the next line
 // I18nManager.allowRTL(true);
 
 import AppleStyleSwipeableRow from '../../components/gesture/AppleStyleSwipeableRow';
-
+import {getprofile} from '../../redux/actions/user';
 const Chat = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = auth().currentUser;
+  const {dataUser} = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(getprofile(user._user.email));
+  }, []);
+
+  if (!dataUser) {
+    navigation.navigate('addprofile');
+  } else {
+    navigation.navigate('home');
+  }
 
   const Row = ({item}) => (
     <RectButton

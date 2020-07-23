@@ -1,4 +1,5 @@
 const initialState = {
+  dataUser: [],
   isLoading: false,
   isLogin: false,
   isSuccess: false,

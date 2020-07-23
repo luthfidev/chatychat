@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   Text,
   View,
@@ -9,13 +9,15 @@ import {
 } from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {logout} from '../../redux/actions/auth';
 
 const Setting = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {dataUser} = useSelector((state) => state.user);
+
   const onLogout = async () => {
     try {
       await dispatch(logout());
@@ -23,8 +25,8 @@ const Setting = () => {
       Alert.alert('logout error');
     }
   };
+
   const renderItemSetting = ({item}) => {
-    console.log(item)
     return (
       <TouchableHighlight
         activeOpacity={0.6}
@@ -41,25 +43,32 @@ const Setting = () => {
   };
 
   const keyExtractor = (item, index) => index.toString();
-  const renderItemProfile = ({item}) => (
-    <TouchableHighlight
-      activeOpacity={0.6}
-      underlayColor="#DDDDDD"
-      onPress={() => navigation.navigate('editavatar')}>
-      <ListItem
-        title={item.name}
-        subtitle={item.subtitle}
-        leftAvatar={{source: {uri: item.avatar_url}}}
-        bottomDivider
-      />
-    </TouchableHighlight>
-  );
+  const renderItemProfile = ({item}) => {
+    return (
+      <TouchableHighlight
+        activeOpacity={0.6}
+        underlayColor="#DDDDDD"
+        onPress={() => navigation.navigate('editavatar')}>
+        <ListItem
+          title={item.fullname}
+          subtitle={item.phone}
+          leftAvatar={{
+            source: {
+              uri:
+                'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+            },
+          }}
+          bottomDivider
+        />
+      </TouchableHighlight>
+    );
+  };
   return (
     <View>
       <View>
         <FlatList
           keyExtractor={keyExtractor}
-          data={profile}
+          data={[dataUser]}
           renderItem={renderItemProfile}
         />
       </View>
@@ -83,14 +92,6 @@ const Setting = () => {
 
 export default Setting;
 
-const profile = [
-  {
-    name: 'Amy Farha',
-    avatar_url:
-      'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-    subtitle: 'Vice President',
-  },
-];
 const list = [
   {
     name: 'editprofile',

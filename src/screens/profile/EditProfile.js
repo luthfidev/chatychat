@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   SafeAreaView,
@@ -9,59 +8,115 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Header, Input, Card, Button} from 'react-native-elements';
+import {useForm, Controller} from 'react-hook-form';
+import {useDispatch, useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 import EditStyle from '../../theme/profile/EditProfile';
-
+import {updateprofile, getprofile} from '../../redux/actions/user';
 const EditProfile = () => {
+  const dispatch = useDispatch();
+  const {control, handleSubmit, errors} = useForm();
+  const {dataUser, isLoading} = useSelector((state) => state.user);
+  const user = auth().currentUser;
 
-    return (
-      <SafeAreaView style={EditStyle.container}>
-        <KeyboardAvoidingView behavior="position">
-          <View style={EditStyle.header}>
-            <Header
-              centerComponent={
-                <TouchableOpacity>
-                  <View style={EditStyle.btnDown} />
-                </TouchableOpacity>
-              }
-            />
+  const onSubmit = (data) => {
+    try {
+      dispatch(updateprofile(data));
+      dispatch(getprofile(user._user.email));
+    } catch (error) {
+      Alert.alert('Update profile failed');
+    }
+  };
 
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 10}}>
-                Profile
-              </Text>
-            </View>
-            <Card>
-              <View style={EditStyle.WrapperForm}>
-                <Input
-                  label="Full Name"
-                  /* onChangeText={this.onNameChange}
-                  defaultValue={this.state.name} */
-                  /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                />
-                <Input
-                  label="Birthdate"
-                  /* onChangeText={this.onBirthdateChange}
-                  defaultValue={this.state.birthdate} */
-                  /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                />
-                <View>
-                  <Input
-                    label="Gender"
-                   /*  onChangeText={this.onGenderChange}
-                    defaultValue={this.state.gender} */
-                    /* leftIcon={{type: 'font-awesome', name: 'chevron-left'}} */
-                  />
-                </View>
-                <Button
-                 /*  loading={isLoading}
-                  onPress={this.handleSubmit} */
-                  title="Save"
-                />
-              </View>
-            </Card>
+  function trim(s) {
+    return s.replace(/^\s+|\s+$/g, ' ');
+  }
+
+  return (
+    <SafeAreaView style={EditStyle.container}>
+      <KeyboardAvoidingView behavior="position">
+        <View style={EditStyle.header}>
+          <Header
+            centerComponent={
+              <TouchableOpacity>
+                <View style={EditStyle.btnDown} />
+              </TouchableOpacity>
+            }
+          />
+
+          <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 10}}>
+              Profile
+            </Text>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-}
+          <Card>
+            <View style={EditStyle.WrapperForm}>
+              <Controller
+                control={control}
+                render={({onChange, onBlur, value}) => (
+                  <Input
+                    type="text"
+                    underlineColorAndroid="transparent"
+                    placeholder="Fullname"
+                    placeholderTextColor="#00a8ff"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={(fullname) => onChange(trim(fullname))}
+                  />
+                )}
+                name="fullname"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Required',
+                  },
+                }}
+                defaultValue={dataUser.fullname}
+              />
+              {errors.fullname && (
+                <Text style={EditStyle.errormsg}>
+                  {errors.fullname.message}
+                </Text>
+              )}
+              <Controller
+                control={control}
+                render={({onChange, onBlur, value}) => (
+                  <Input
+                    type="text"
+                    underlineColorAndroid="transparent"
+                    placeholder="Phone"
+                    placeholderTextColor="#00a8ff"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={(phone) => onChange(trim(phone))}
+                  />
+                )}
+                name="phone"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Required',
+                  },
+                  pattern: {
+                    value: /^\d+$/,
+                    message: 'Not valid',
+                  },
+                }}
+                defaultValue={dataUser.phone}
+              />
+              {errors.phone && (
+                <Text style={EditStyle.errormsg}>{errors.phone.message}</Text>
+              )}
+              <Button
+                loading={isLoading}
+                onPress={handleSubmit(onSubmit)}
+                title="Update"
+              />
+            </View>
+          </Card>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+};
 export default EditProfile;

@@ -5,8 +5,6 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
-import {useDispatch, useSelector} from 'react-redux';
-
 // Auth
 import LoginScreen from '../../screens/Login';
 import RegisterScreen from '../../screens/Register';
@@ -16,17 +14,13 @@ import ChatPersonalScreen from '../../screens/room/ChatPersonal';
 import AddProfileScreen from '../../screens/profile/AddProfile';
 import EditProfileScreen from '../../screens/profile/EditProfile';
 
-import {getprofile} from '../../redux/actions/user';
-
 // Bottom Tab
 import Tab from './Tab';
 
 const Stacks = createStackNavigator();
 const Stack = () => {
-  const dispatch = useDispatch();
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
   const onAuthStateChanged = (_user) => {
     setUser(_user);
     if (initializing) {
@@ -34,7 +28,6 @@ const Stack = () => {
     }
   };
   useEffect(() => {
-    dispatch(getprofile())
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +40,6 @@ const Stack = () => {
       <NavigationContainer>
         <Stacks.Navigator headerMode="float" animation="fade">
           {!user && (
-            
             <>
               <Stacks.Screen
                 component={LoginScreen}
@@ -95,7 +87,8 @@ const Stack = () => {
                   gestureEnabled: true,
                   gestureDirection: 'vertical',
                   cardStyleInterpolator:
-                    CardStyleInterpolators.forModalPresentationIOS,}}
+                    CardStyleInterpolators.forModalPresentationIOS,
+                }}
                 component={EditProfileScreen}
                 name={'editprofile'}
               />
@@ -103,10 +96,8 @@ const Stack = () => {
                 options={{
                   title: 'Profile',
                   headerShown: false,
-                  gestureEnabled: true,
-                  gestureDirection: 'vertical',
-                  cardStyleInterpolator:
-                    CardStyleInterpolators.forModalPresentationIOS,}}
+                  gestureEnabled: false,
+                }}
                 component={AddProfileScreen}
                 name={'addprofile'}
               />
