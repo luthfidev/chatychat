@@ -64,6 +64,10 @@ const AddProfile = () => {
                     value: true,
                     message: 'Required',
                   },
+                  minLength: {
+                    value: 5,
+                    message: 'min length is 5',
+                  },
                 }}
                 defaultValue=""
               />
@@ -94,6 +98,10 @@ const AddProfile = () => {
                   pattern: {
                     value: /^\d+$/,
                     message: 'Not valid',
+                  },
+                  maxLength: {
+                    value: 13,
+                    message: 'min length is 13',
                   },
                 }}
                 defaultValue=""
