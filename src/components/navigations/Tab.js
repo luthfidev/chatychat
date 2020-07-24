@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 
 import ChatScreen from '../../screens/tab/Chat';
 import ContactScreen from '../../screens/tab/Contact';
 import ProfileScreen from '../../screens/tab/Setting';
+import MapScreen from '../../screens/tab/Map';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -16,7 +17,7 @@ const Tab = () => {
         options={{
           title: 'Chat',
           tabBarIcon: ({color, size}) => (
-            <Icon name="chatbubbles" color={color} size={size} />
+            <Icon name="chatbubbles-outline" color={color} size={size} />
           ),
         }}
         component={ChatScreen}
@@ -26,7 +27,7 @@ const Tab = () => {
         options={{
           title: 'Contact',
           tabBarIcon: ({color, size}) => (
-            <Icon name="call" color={color} size={size} />
+            <Icon name="call-outline" color={color} size={size} />
           ),
         }}
         component={ContactScreen}
@@ -35,9 +36,20 @@ const Tab = () => {
 
       <BottomTab.Screen
         options={{
+          title: 'map',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="map-outline" solid color={color} size={size} />
+          ),
+        }}
+        component={MapScreen}
+        name="map"
+      />
+
+      <BottomTab.Screen
+        options={{
           title: 'setting',
           tabBarIcon: ({color, size}) => (
-            <Icon name="settings" solid color={color} size={size} />
+            <Icon name="settings-outline" solid color={color} size={size} />
           ),
         }}
         component={ProfileScreen}

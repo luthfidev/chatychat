@@ -7,34 +7,36 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import {useForm, Controller} from 'react-hook-form';
 import {useDispatch, useSelector} from 'react-redux';
 import {Header, Input, Card, Button} from 'react-native-elements';
+import {useNavigation} from '@react-navigation/native';
 import EditStyle from '../../theme/profile/EditProfile';
-import {addprofile} from '../../redux/actions/user';
+import {addprofile, getprofile} from '../../redux/actions/user';
 
 const AddProfile = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const {control, handleSubmit, errors} = useForm();
-
+  const user = auth().currentUser;
   const onSubmit = (data) => {
     try {
-      dispatch(addprofile(data));
+      dispatch(addprofile(user._user.email, data));
+      dispatch(getprofile(user._user.email));
     } catch (error) {
       Alert.alert('Add profile failed');
     }
   };
+
+  function trim(s) {
+    return s.replace(/^\s+|\s+$/g, ' ');
+  }
   return (
     <SafeAreaView style={EditStyle.container}>
       <KeyboardAvoidingView behavior="position">
         <View style={EditStyle.header}>
-          <Header
-            centerComponent={
-              <TouchableOpacity>
-                <View style={EditStyle.btnDown} />
-              </TouchableOpacity>
-            }
-          />
+          <Header />
 
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 10}}>
@@ -53,7 +55,7 @@ const AddProfile = () => {
                     placeholderTextColor="#00a8ff"
                     autoCapitalize="none"
                     value={value}
-                    onChangeText={(fullname) => onChange(fullname)}
+                    onChangeText={(fullname) => onChange(trim(fullname))}
                   />
                 )}
                 name="fullname"
@@ -88,6 +90,10 @@ const AddProfile = () => {
                   required: {
                     value: true,
                     message: 'Required',
+                  },
+                  pattern: {
+                    value: /^\d+$/,
+                    message: 'Not valid',
                   },
                 }}
                 defaultValue=""

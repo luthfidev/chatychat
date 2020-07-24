@@ -115,7 +115,9 @@ class EditAvatar extends Component {
                 rounded
                 size={125}
                 source={{
-                  uri: this.state.picture,
+                  uri:
+                    this.state.picture ||
+                    'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
                 }}
               />
             )}
@@ -169,24 +171,5 @@ const profileStyle = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
-  },
-});
-
-const CardStyle = StyleSheet.create({
-  WrapperContent: {
-    flexDirection: 'column',
-  },
-  wrapperButton: {
-    flex: 1,
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  button: {
-    shadowColor: '#dcdde1',
-    elevation: 6,
-  },
-  btnTitle: {
-    marginTop: 10,
   },
 });

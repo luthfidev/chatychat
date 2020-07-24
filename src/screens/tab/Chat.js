@@ -18,6 +18,7 @@ const Chat = () => {
 
   useEffect(() => {
     dispatch(getprofile(user._user.email));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!dataUser) {

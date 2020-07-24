@@ -10,13 +10,10 @@ export const getprofile = (email) => {
   };
 };
 
-export const addprofile = (data) => {
+export const addprofile = (email, data) => {
   return {
     type: 'ADD_PROFILE',
-    payload: firestore()
-      .collection(collections)
-      .doc(user._user.email)
-      .set(data),
+    payload: firestore().collection(collections).doc(email).set(data),
   };
 };
 
