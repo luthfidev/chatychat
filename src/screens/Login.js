@@ -39,7 +39,6 @@ const Login = () => {
     }
   };
   const user = auth().currentUser;
-  console.log(user);
   return (
     <DismissKeyboard>
       <View style={LoginStyle.container}>
@@ -110,7 +109,7 @@ const Login = () => {
             </View>
             <Button
               title="Login"
-              loading={isLoading}
+              // loading={isLoading}
               onPress={handleSubmit(onSubmit)}
             />
             <View style={LoginStyle.wrapBtn}>

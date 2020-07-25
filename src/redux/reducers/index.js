@@ -5,6 +5,7 @@ import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 // import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import auth from './auth';
 import user from './user';
+import contact from './contact';
 
 const persistConfig = {
   key: 'root',
@@ -17,6 +18,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth,
   user,
+  contact,
 });
 
 // export default(rootReducer)

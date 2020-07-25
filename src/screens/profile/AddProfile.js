@@ -17,7 +17,6 @@ import {addprofile, getprofile} from '../../redux/actions/user';
 
 const AddProfile = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const {control, handleSubmit, errors} = useForm();
   const user = auth().currentUser;
   const onSubmit = (data) => {

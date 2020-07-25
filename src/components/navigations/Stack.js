@@ -35,6 +35,7 @@ const Stack = () => {
   if (initializing) {
     return null;
   }
+
   return (
     <>
       <NavigationContainer>

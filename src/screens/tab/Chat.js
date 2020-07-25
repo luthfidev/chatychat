@@ -5,6 +5,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Avatar, Badge, SearchBar} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
 //  To toggle LTR/RTL uncomment the next line
 // I18nManager.allowRTL(true);
 
@@ -15,8 +17,8 @@ const Chat = () => {
   const dispatch = useDispatch();
   const user = auth().currentUser;
   const {dataUser} = useSelector((state) => state.user);
-
   useEffect(() => {
+    isOnline();
     dispatch(getprofile(user._user.email));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -26,6 +28,17 @@ const Chat = () => {
   } else {
     navigation.navigate('home');
   }
+
+  const isOnline = () => {
+    const userId = auth().currentUser.uid;
+    const reference = database().ref(`/online/${userId}`);
+    reference.set(true).then(() => console.log('Online presence set'));
+    reference
+      .onDisconnect()
+      .remove()
+      .then(() => console.log('On disconnect function configured.'));
+  };
+
 
   const Row = ({item}) => (
     <RectButton
