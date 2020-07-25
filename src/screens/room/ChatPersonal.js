@@ -3,82 +3,57 @@ import React, {useEffect, useState, useCallback} from 'react';
 import {Text, View, FlatList} from 'react-native';
 import {Header} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
-import {useNavigation} from '@react-navigation/native';
-import MsgBar from '../../components/room/msgbar';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 const ChatPersonal = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [messages, setMessages] = useState([]);
+
+  const sendFriendId = route.params;
+  const userId = auth().currentUser.uid;
+
   useEffect(() => {
     ReceiveMessage();
   }, []);
 
-  /*   const Online = () => {
-    const userId = auth().currentUser.uid;
-    database()
-      .ref(`/chat/${userId}/1XbYLhfgtTVAZlqzEirRjhYPZ1m2`)
-      .once('value')
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          const {timestamp, text, user} = doc.val();
-          const {key: _id} = doc;
-          const message = {
-            _id,
-            timestamp,
-            text,
-            user,
-          };
-          setMessages([message]);
-        });
-      });
-  }; */
   const ReceiveMessage = () => {
-    const userId = auth().currentUser.uid;
     database()
-      .ref(`/chat/${userId}/1XbYLhfgtTVAZlqzEirRjhYPZ1m2`)
+      .ref(`/chat/${sendFriendId}/${userId}`)
       .once('value')
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           const {timestamp, text, user} = doc.val();
           const {key: _id} = doc;
-          const message = {_id, timestamp, text, user};
+          const message = {_id, createdAt: timestamp, text, user};
           setMessages((previousMessages) =>
             GiftedChat.append(previousMessages, message),
           );
         });
       });
   };
-  /*   const onSend = useCallback((messages = []) => {
-    for (let i = 0; i < messages.length; i++) {
-      const userId = auth().currentUser.uid;
-      const reference = database().ref(
-        `/chat/${userId}/1XbYLhfgtTVAZlqzEirRjhYPZ1m2/2`,
-      );
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, messages),
-      );
-      reference.set(messages);
-    }
-  }, []); */
 
   const sendMessage = useCallback((messages = []) => {
     for (let i = 0; i < messages.length; i++) {
       const {text, user} = messages[i];
-      const userId = auth().currentUser.uid;
       const message = {
         text,
         user,
         timestamp: new Date().getTime(),
       };
-      const reference = database().ref(
-        `/chat/${userId}/1XbYLhfgtTVAZlqzEirRjhYPZ1m2/${new Date().getTime()}`,
+      const send = database().ref(
+        `/chat/${userId}/${sendFriendId}/${new Date().getTime()}`,
+      );
+      const receive = database().ref(
+        `/chat/${sendFriendId}/${userId}/${new Date().getTime()}`,
       );
       setMessages((previousMessages) =>
         GiftedChat.append(previousMessages, messages),
       );
-      reference.set(message);
+      send.set(message);
+      receive.set(message);
     }
   }, []);
 
@@ -96,7 +71,10 @@ const ChatPersonal = () => {
         messages={messages}
         onSend={(messages) => sendMessage(messages)}
         user={{
-          _id: '1XbYLhfgtTVAZlqzEirRjhYPZ1m2',
+          _id: userId,
+          name: 'avatar',
+          avatar:
+            'http://www.hidoctor.ir/wp-content/uploads/2014/02/Model-lebas-parastar-24.jpg',
         }}
       />
     </View>
