@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Button} from 'react-native-elements';
@@ -48,90 +49,94 @@ const Login = () => {
 
   return (
     <DismissKeyboard>
-      <View style={LoginStyle.container}>
-        <KeyboardAvoidingView behavior="position">
-          <View style={LoginStyle.wrapLogo}>
-            <Logo />
-          </View>
-          <View style={LoginStyle.form}>
-            <View style={LoginStyle.field}>
-              <Controller
-                control={control}
-                render={({onChange, onBlur, value}) => (
-                  <TextInput
-                    type="text"
-                    style={LoginStyle.input}
-                    underlineColorAndroid="transparent"
-                    placeholder="Email"
-                    placeholderTextColor="#00a8ff"
-                    autoCapitalize="none"
-                    value={value}
-                    onChangeText={(email) => onChange(email)}
-                  />
-                )}
-                name="email"
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Required',
-                  },
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: 'Enter a valid e-mail address',
-                  },
-                }}
-                defaultValue=""
-              />
-              {errors.email && (
-                <Text style={LoginStyle.errormsg}>{errors.email.message}</Text>
-              )}
-              <Controller
-                control={control}
-                render={({onChange, onBlur, value}) => (
-                  <TextInput
-                    type="text"
-                    style={LoginStyle.input}
-                    underlineColorAndroid="transparent"
-                    placeholder="Password"
-                    placeholderTextColor="#00a8ff"
-                    autoCapitalize="none"
-                    value={value}
-                    onChangeText={(password) => onChange(password)}
-                  />
-                )}
-                name="password"
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Required',
-                  },
-                }}
-                defaultValue=""
-              />
-              {errors.password && (
-                <Text style={LoginStyle.errormsg}>
-                  {errors.password.message}
-                </Text>
-              )}
+      <ScrollView>
+        <View style={LoginStyle.container}>
+          <KeyboardAvoidingView behavior="position">
+            <View style={LoginStyle.wrapLogo}>
+              <Logo />
             </View>
-            <Button
-              title="Login"
-              // loading={isLoading}
-              onPress={handleSubmit(onSubmit)}
-            />
-            <View style={LoginStyle.wrapBtn}>
-              <TouchableHighlight
-                onPress={() => navigation.navigate('register')}
-                activeOpacity={0.6}
-                underlayColor="#DDDDDD">
-                <View style={LoginStyle.btnJoin}>
-                  <Text style={LoginStyle.textBtnJoin}>JOIN CHAT</Text>
-                </View>
-              </TouchableHighlight>
+            <View style={LoginStyle.form}>
+              <View style={LoginStyle.field}>
+                <Controller
+                  control={control}
+                  render={({onChange, onBlur, value}) => (
+                    <TextInput
+                      type="text"
+                      style={LoginStyle.input}
+                      underlineColorAndroid="transparent"
+                      placeholder="Email"
+                      placeholderTextColor="#00a8ff"
+                      autoCapitalize="none"
+                      value={value}
+                      onChangeText={(email) => onChange(email)}
+                    />
+                  )}
+                  name="email"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: 'Required',
+                    },
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: 'Enter a valid e-mail address',
+                    },
+                  }}
+                  defaultValue=""
+                />
+                {errors.email && (
+                  <Text style={LoginStyle.errormsg}>
+                    {errors.email.message}
+                  </Text>
+                )}
+                <Controller
+                  control={control}
+                  render={({onChange, onBlur, value}) => (
+                    <TextInput
+                      type="text"
+                      style={LoginStyle.input}
+                      underlineColorAndroid="transparent"
+                      placeholder="Password"
+                      placeholderTextColor="#00a8ff"
+                      autoCapitalize="none"
+                      value={value}
+                      onChangeText={(password) => onChange(password)}
+                    />
+                  )}
+                  name="password"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: 'Required',
+                    },
+                  }}
+                  defaultValue=""
+                />
+                {errors.password && (
+                  <Text style={LoginStyle.errormsg}>
+                    {errors.password.message}
+                  </Text>
+                )}
+              </View>
+              <Button
+                title="Login"
+                // loading={isLoading}
+                onPress={handleSubmit(onSubmit)}
+              />
+              <View style={LoginStyle.wrapBtn}>
+                <TouchableHighlight
+                  onPress={() => navigation.navigate('register')}
+                  activeOpacity={0.6}
+                  underlayColor="#DDDDDD">
+                  <View style={LoginStyle.btnJoin}>
+                    <Text style={LoginStyle.textBtnJoin}>JOIN CHAT</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
             </View>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+          </KeyboardAvoidingView>
+        </View>
+      </ScrollView>
     </DismissKeyboard>
   );
 };
