@@ -27,13 +27,13 @@ const ChatPersonal = () => {
     );
     return () =>
       database()
-        .ref(`/chat/${sendFriendId}/${userId}`)
+        .ref(`/chat/${userId}/${sendFriendId}`)
         .off('child_added', onChildAdd);
   }, []);
 
   const receiveMessage = (callback) => {
     database()
-      .ref(`/chat/${sendFriendId}/${userId}`)
+      .ref(`/chat/${userId}/${sendFriendId}`)
       .limitToLast(20)
       .on('child_added', (snapshot) => callback(parse(snapshot)));
   };
