@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -11,20 +11,26 @@ import {ListItem} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
 import {logout} from '../../redux/actions/auth';
 
 const Setting = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  let user = auth().currentUser;
+  const [avatar, setAvatar] = useState(
+    'http://www.hidoctor.ir/wp-content/uploads/2014/02/Model-lebas-parastar-24.jpg',
+  );
   const {dataUser} = useSelector((state) => state.user);
 
-  const onLogout = async () => {
+/*   const onLogout = () => {
     try {
-      await dispatch(logout());
+      dispatch(logout());
     } catch (error) {
       Alert.alert('logout error');
     }
-  };
+  }; */
 
   const renderItemSetting = ({item}) => {
     return (
@@ -42,6 +48,15 @@ const Setting = () => {
     );
   };
 
+  let imageRef = storage().ref('avatar/' + user.uid);
+  imageRef
+    .getDownloadURL()
+    .then((url) => {
+      //from url you can fetched the uploaded image easily
+      setAvatar(url);
+    })
+    .catch((e) => console.log('getting downloadURL of image error => ', e));
+
   const keyExtractor = (item, index) => index.toString();
   const renderItemProfile = ({item}) => {
     return (
@@ -54,8 +69,7 @@ const Setting = () => {
           subtitle={item.phone}
           leftAvatar={{
             source: {
-              uri:
-                'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+              uri: avatar,
             },
           }}
           bottomDivider
@@ -82,7 +96,7 @@ const Setting = () => {
       </View>
       <View style={settingStyle.space} />
       <View style={settingStyle.btnLogout}>
-        <TouchableOpacity onPress={onLogout}>
+        <TouchableOpacity onPress={() => dispatch(logout())}>
           <Text>Logout</Text>
         </TouchableOpacity>
       </View>
@@ -99,9 +113,9 @@ const list = [
     icon: 'person',
   },
   {
-    name: 'chat',
-    title: 'Chat',
-    icon: 'chat',
+    name: 'map',
+    title: 'Map',
+    icon: 'map',
   },
 ];
 

@@ -1,12 +1,16 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, I18nManager} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {FlatList, RectButton} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Badge, SearchBar} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-
+import firestore from '@react-native-firebase/firestore';
+import {GiftedChat} from 'react-native-gifted-chat';
+const collections = 'chatychats';
+import SplashScreen from 'react-native-splash-screen';
 //  To toggle LTR/RTL uncomment the next line
 // I18nManager.allowRTL(true);
 
@@ -15,14 +19,46 @@ import {getprofile} from '../../redux/actions/user';
 const Chat = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = auth().currentUser;
+  const [messages, setMessages] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const useruid = auth().currentUser;
   const {dataUser} = useSelector((state) => state.user);
+
   useEffect(() => {
+    SplashScreen.hide();
     isOnline();
-    dispatch(getprofile(user._user.email));
+    dispatch(getprofile(useruid._user.email));
+    firestore()
+      .collection(collections)
+      .orderBy('fullname')
+      .get()
+      .then((snapshot) => {
+        const user = [];
+        snapshot.docs.forEach((doc) => {
+          user.push(doc.data());
+        });
+        setContacts(user);
+      });
+    receiveMessage((message) =>
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, message),
+      ),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const receiveMessage = (callback) => {
+    database()
+      .ref(`/chat/${useruid.uid}`)
+      .limitToLast(20)
+      .on('child_added', (snapshot) => callback(parse(snapshot)));
+  };
+  const parse = (snapshot) => {
+    const {timestamp, text, user} = snapshot.val();
+    const {key: _id} = snapshot;
+    const message = {_id, createdAt: timestamp, text, user};
+    return message;
+  };
   if (!dataUser) {
     navigation.navigate('addprofile');
   } else {
@@ -32,13 +68,19 @@ const Chat = () => {
   const isOnline = () => {
     const userId = auth().currentUser.uid;
     const reference = database().ref(`/online/${userId}`);
-    reference.set(true).then(() => console.log('Online presence set'));
+    reference
+      .set({uuid: userId, status: true})
+      .then(() => console.log('Online presence set'));
     reference
       .onDisconnect()
       .remove()
-      .then(() => console.log('On disconnect function configured.'));
+      .then(() =>
+        firestore()
+          .collection(collections)
+          .doc(useruid._user.email)
+          .update({isOnline: false}),
+      );
   };
-
 
   const Row = ({item}) => (
     <RectButton

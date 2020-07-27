@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {
   Platform,
   StyleSheet,
@@ -8,20 +8,21 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import {Avatar, colors, Header} from 'react-native-elements';
-import Icon from 'react-native-ionicons';
+import {Avatar, Header} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
+import {useDispatch, useSelector} from 'react-redux';
+import storage from '@react-native-firebase/storage';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+let user = auth().currentUser;
+import {uploadavatar} from '../../redux/actions/user';
 
-class EditAvatar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      avatar: null,
-      progress: 0,
-    };
-  }
-
-  handleChoosePhoto = () => {
+const EditAvatar = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [avatar, setAvatar] = useState(null);
+  const [avatarFill, setAvatarFill] = useState(null);
+  const handleChoosePhoto = () => {
     const options = {
       quality: 1.0,
       maxWidth: 500,
@@ -30,11 +31,7 @@ class EditAvatar extends Component {
         skipBackup: true,
       },
     };
-    /* ImagePicker.launchImageLibrary(options, (response) => {
-      if (response.uri) {
-        this.setState({avatar: response});
-      }
-    }); */
+
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -45,88 +42,73 @@ class EditAvatar extends Component {
       } else {
         const source = response;
 
-        this.setState({
-          avatar: source,
-        });
+        setAvatar(source);
       }
     });
   };
 
-  handleUploadAvatar = async () => {
-    const {id} = this.state.user;
-    const {token} = this.props.auth;
-    // const data = this.createFormData(this.state.avatar);
-    const avatar = this.state.avatar;
-    const data = new FormData();
-    data.append('picture', {
-      name: avatar.fileName,
-      type: avatar.type,
-      uri:
-        Platform.OS === 'android'
-          ? avatar.uri
-          : avatar.uri.replace('file://', ''),
-    });
-    await this.props
-      .uploadavatarprofile(token, id, data)
-      .then((response) => {
-        Alert.alert('Upload success!');
-        this.setState({avatar: null});
-      })
-      .catch((error) => {
-        Alert.alert('Upload failed!');
+  const handleUploadAvatar = () => {
+    if (avatar.fileSize <= 1500000 && avatar.type === 'image/jpeg') {
+      dispatch(uploadavatar(avatar.uri)).then(() => {
+        Alert.alert('Success upload image');
       });
+    } else {
+      Alert.alert('Please select image less than 1,5 mb');
+    }
   };
 
-  render() {
-    const {avatar} = this.state;
-    return (
-      <SafeAreaView style={profileStyle.container}>
-        <View style={profileStyle.header}>
-          <Header
-            rightComponent={
-              <Icon
-                name="create"
-                color="#fff"
-                onPress={this.navigateEditProfile}
-              />
-            }
-          />
-          <View style={profileStyle.WrapperAvatar}>
-            {avatar && (
-              <>
-                <Avatar
-                  showEditButton
-                  onPress={this.handleChoosePhoto}
-                  rounded
-                  size={125}
-                  source={{
-                    uri: avatar.uri,
-                  }}
-                />
-                <TouchableOpacity onPress={this.handleUploadAvatar}>
-                  <Text style={profileStyle.btnupload}>SAVE</Text>
-                </TouchableOpacity>
-              </>
-            )}
-            {!avatar && (
+  let imageRef = storage().ref('avatar/' + user.uid);
+  imageRef
+    .getDownloadURL()
+    .then((url) => {
+      //from url you can fetched the uploaded image easily
+      setAvatarFill(url);
+    })
+    .catch((e) => console.log('getting downloadURL of image error => ', e));
+
+  return (
+    <SafeAreaView style={profileStyle.container}>
+      <View style={profileStyle.header}>
+        <Header
+          leftComponent={{
+            onPress: () => navigation.goBack(),
+            icon: 'arrow-back',
+            color: '#fff',
+          }}
+        />
+        <View style={profileStyle.WrapperAvatar}>
+          {avatar && (
+            <>
               <Avatar
                 showEditButton
-                onPress={this.handleChoosePhoto}
+                onPress={handleChoosePhoto}
                 rounded
                 size={125}
                 source={{
-                  uri:
-                    this.state.picture ||
-                    'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+                  uri: avatar.uri,
                 }}
               />
-            )}
-          </View>
+              <TouchableOpacity onPress={handleUploadAvatar}>
+                <Text style={profileStyle.btnupload}>SAVE</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {!avatar && (
+            <Avatar
+              showEditButton
+              onPress={handleChoosePhoto}
+              rounded
+              size={125}
+              source={{
+                uri: avatarFill,
+              }}
+            />
+          )}
         </View>
-      </SafeAreaView>
-    );
-  }
-}
+      </View>
+    </SafeAreaView>
+  );
+};
 
 export default EditAvatar;
 
@@ -145,6 +127,7 @@ const profileStyle = StyleSheet.create({
     marginBottom: 25,
   },
   WrapperAvatar: {
+    marginTop: 15,
     alignItems: 'center',
   },
   wrapperBiodata: {

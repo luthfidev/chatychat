@@ -13,6 +13,8 @@ import EditAvatarScreen from '../../screens/profile/EditAvatar';
 import ChatPersonalScreen from '../../screens/room/ChatPersonal';
 import AddProfileScreen from '../../screens/profile/AddProfile';
 import EditProfileScreen from '../../screens/profile/EditProfile';
+import DetailContactScreen from '../../screens/profile/DetailContact';
+import MapScreen from '../../screens/tab/Map';
 
 // Bottom Tab
 import Tab from './Tab';
@@ -70,7 +72,6 @@ const Stack = () => {
                 component={Tab}
                 name={'home'}
               />
-
               <Stacks.Screen
                 options={{title: 'Edit Avatar', headerShown: false}}
                 component={EditAvatarScreen}
@@ -85,6 +86,15 @@ const Stack = () => {
                 options={{
                   title: 'Profile',
                   headerShown: false,
+                  gestureEnabled: false,
+                }}
+                component={AddProfileScreen}
+                name={'addprofile'}
+              />
+              <Stacks.Screen
+                options={{
+                  title: 'Profile',
+                  headerShown: false,
                   gestureEnabled: true,
                   gestureDirection: 'vertical',
                   cardStyleInterpolator:
@@ -94,13 +104,14 @@ const Stack = () => {
                 name={'editprofile'}
               />
               <Stacks.Screen
-                options={{
-                  title: 'Profile',
-                  headerShown: false,
-                  gestureEnabled: false,
-                }}
-                component={AddProfileScreen}
-                name={'addprofile'}
+                options={{title: 'Detail Contact', headerShown: false}}
+                component={DetailContactScreen}
+                name={'detailcontact'}
+              />
+              <Stacks.Screen
+                options={{title: 'Map', headerShown: false}}
+                component={MapScreen}
+                name={'map'}
               />
             </>
           )}

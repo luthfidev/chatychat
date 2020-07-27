@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {useForm, Controller} from 'react-hook-form';
 import auth from '@react-native-firebase/auth';
+import SplashScreen from 'react-native-splash-screen';
 import {Logo} from '../components/Logo';
 import LoginStyle from '../theme/auth/login';
 import {login} from '../redux/actions/auth';
@@ -39,6 +40,12 @@ const Login = () => {
     }
   };
   const user = auth().currentUser;
+
+  useEffect(() => {
+    SplashScreen.hide();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <DismissKeyboard>
       <View style={LoginStyle.container}>

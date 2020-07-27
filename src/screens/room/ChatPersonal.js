@@ -1,6 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {Text, View, FlatList} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {View} from 'react-native';
 import {Header} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -27,7 +29,7 @@ const ChatPersonal = () => {
       database()
         .ref(`/chat/${sendFriendId}/${userId}`)
         .off('child_added', onChildAdd);
-  }, [userId]);
+  }, []);
 
   const receiveMessage = (callback) => {
     database()

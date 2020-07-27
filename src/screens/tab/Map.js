@@ -5,7 +5,8 @@ import Geolocation from 'react-native-geolocation-service';
 import {PERMISSIONS, request} from 'react-native-permissions';
 import {useDispatch} from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
-import {updateprofile} from '../../redux/actions/user';
+import {updatelocation} from '../../redux/actions/user';
+import requestLocationPermission from '../../helpers/requestLocationPermision';
 const collections = 'chatychats';
 
 const initialState = {
@@ -49,7 +50,7 @@ const Map = () => {
             latitude: latitude,
             longitude: longitude,
           });
-          dispatch(updateprofile(latitude, longitude));
+          dispatch(updatelocation(latitude, longitude));
         },
         (error) => {
           // See error code charts below.

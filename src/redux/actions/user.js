@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 let user = auth().currentUser;
 let collections = 'chatychats';
 
@@ -25,19 +26,26 @@ export const addprofile = (email, data) => {
   };
 };
 
-/* export const updateprofile = (latitude, longitude) => {
+export const updateprofile = (data) => {
   return {
     type: 'UPDATE_PROFILE',
     payload: firestore()
       .collection(collections)
       .doc(user._user.email)
-      .update({latitude: latitude, longitude: longitude}),
+      .update(data),
   };
 };
- */
-export const updateprofile = (latitude, longitude) => {
+
+export const uploadavatar = (image) => {
   return {
-    type: 'UPDATE_PROFILE',
+    type: 'UPLOAD_IMAGE',
+    payload: storage().ref(`avatar/${user.uid}`).putFile(image),
+  };
+};
+
+export const updatelocation = (latitude, longitude) => {
+  return {
+    type: 'UPDATE_LOCATION',
     payload: firestore()
       .collection(collections)
       .doc(user._user.email)

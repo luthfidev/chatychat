@@ -1,15 +1,20 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import {View, FlatList, Text, TouchableOpacity} from 'react-native';
 import {Avatar, Badge, SearchBar} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 const collections = 'chatychats';
 import ContactStyle from '../../theme/contact/ContactStyle';
 
 const Contact = () => {
+  const navigation = useNavigation();
   const [contacts, setContacts] = useState([]);
-  const [isOnline, setIsOnline] = useState(false);
+  const [isOnline, setIsOnline] = useState([]);
+  const [avatarFill, setAvatarFill] = useState(null);
   const userId = auth().currentUser.uid;
   useEffect(() => {
     Online();
@@ -25,9 +30,10 @@ const Contact = () => {
         setContacts(user);
       });
   }, []);
+
   const Online = () => {
     database()
-      .ref(`/online/${userId}`)
+      .ref('/online/')
       .once('value')
       .then((snapshot) => {
         setIsOnline(snapshot.val());
@@ -36,37 +42,51 @@ const Contact = () => {
 
   const keyExtractor = (item, index) => index.toString();
   const renderItem = ({item}) => {
+    let imageRef = storage().ref('avatar/' + item.uuid);
+    imageRef
+      .getDownloadURL()
+      .then((url) => {
+        //from url you can fetched the uploaded image easily
+        setAvatarFill(url);
+      })
+      .catch((e) => console.log('getting downloadURL of image error => ', e));
     return (
       <View style={ContactStyle.rectButton}>
-        <View style={ContactStyle.wrapChat}>
-          <View>
-            <Avatar
-              size="medium"
-              rounded
-              source={{
-                uri:
-                  'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-              }}
-            />
-            {isOnline && item.uuid === userId ? (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('chatpersonal', item)}>
+          <View style={ContactStyle.wrapChat}>
+            <View>
+              <Avatar
+                size="medium"
+                rounded
+                source={{
+                  uri: avatarFill,
+                }}
+              />
+              {/*        {isOnline && item.uuid === userId ? (
+                <Badge
+                  status="success"
+                  containerStyle={{position: 'absolute', top: 2, right: 6}}
+                />
+              ) : (
+                <Badge
+                  status="error"
+                  containerStyle={{position: 'absolute', top: 2, right: 6}}
+                />
+              )} */}
               <Badge
-                status="success"
+                status={isOnline ? 'success' : 'error'}
                 containerStyle={{position: 'absolute', top: 2, right: 6}}
               />
-            ) : (
-              <Badge
-                status="error"
-                containerStyle={{position: 'absolute', top: 2, right: 6}}
-              />
-            )}
+            </View>
+            <View style={ContactStyle.wrapMessage}>
+              <Text style={ContactStyle.fromText}>{item.fullname}</Text>
+              <Text numberOfLines={2} style={ContactStyle.messageText}>
+                {item.phone}
+              </Text>
+            </View>
           </View>
-          <View style={ContactStyle.wrapMessage}>
-            <Text style={ContactStyle.fromText}>{item.fullname}</Text>
-            <Text numberOfLines={2} style={ContactStyle.messageText}>
-              {item.phone}
-            </Text>
-          </View>
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };
