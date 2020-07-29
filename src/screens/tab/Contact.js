@@ -42,14 +42,14 @@ const Contact = () => {
 
   const keyExtractor = (item, index) => index.toString();
   const renderItem = ({item}) => {
-    let imageRef = storage().ref('avatar/' + item.uuid);
+    /*     let imageRef = storage().ref('avatar/' + item.uuid);
     imageRef
       .getDownloadURL()
       .then((url) => {
         //from url you can fetched the uploaded image easily
         setAvatarFill(url);
       })
-      .catch((e) => console.log('getting downloadURL of image error => ', e));
+      .catch((e) => console.log('getting downloadURL of image error => ', e)); */
     return (
       <View style={ContactStyle.rectButton}>
         <TouchableOpacity
@@ -60,7 +60,7 @@ const Contact = () => {
                 size="medium"
                 rounded
                 source={{
-                  uri: avatarFill,
+                  uri: 'https://muhilibrary.alipal.pw/uploads/default.png',
                 }}
               />
               {/*        {isOnline && item.uuid === userId ? (

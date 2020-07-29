@@ -20,7 +20,7 @@ const Setting = () => {
   const navigation = useNavigation();
   let user = auth().currentUser;
   const [avatar, setAvatar] = useState(
-    'http://www.hidoctor.ir/wp-content/uploads/2014/02/Model-lebas-parastar-24.jpg',
+    'https://muhilibrary.alipal.pw/uploads/default.png',
   );
   const {dataUser} = useSelector((state) => state.user);
 
