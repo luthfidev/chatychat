@@ -1,7 +1,7 @@
 <h1 align='center'>Chatychat<br>Mobile Chat and Sharing Location Application</h1>
 
 <p align='center'>
-    <img width="800" src='https://raw.githubusercontent.com/luthfidev/chatychat/master/public/chatychat.jpeg' />
+    <img width="800" src='https://raw.githubusercontent.com/luthfidev/chatychat/master/src/public/chatychat.jpeg' />
 </p>
 <br>
 <br>
